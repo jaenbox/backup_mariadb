@@ -13,5 +13,5 @@ db=$(echo "$mysql_database_raw" | cut -d '=' -f 2)
 backup_name="backup_$db_$(date +'%Y%m%d').sql"
 
 echo  'execute backup'
-$(docker exec $docker_container mariadb-dump --databases $db -u$user -p$passwd > backups/backup$backup_name.sql)
+$(docker exec $docker_container mariadb-dump --databases $db -u$user -p$passwd > backups/$backup_name)
 echo 'end backup'
