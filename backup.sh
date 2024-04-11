@@ -1,16 +1,17 @@
-echo '######################################################'
 echo '##                 BACKUP                           ##'
 echo '######################################################'
-
-
-
-echo 'Get values'
+# Get values
 docker_container='fireflyIII_db'
-mysql_user_raw=grep -i "MYSQL_USER" .db.env
-mysql_password_raw=grep -i "MYSQL_DATABASE" .db.env
-mysql_database_raw=grep -i "MYSQL_DATABASE" .db.env
+mysql_user_raw=$(grep -i "MYSQL_USER" .db.env)
+mysql_password_raw=$(grep -i "MYSQL_PASSWORD" .db.env)
+mysql_database_raw=$(grep -i "MYSQL_DATABASE" .db.env)
+# Format raw data
+user=$(echo "$mysql_user_raw" | cut -d '=' -f 2)
+passwd=$(echo "$mysql_password_raw" | cut -d '=' -f 2)
+db=$(echo "$mysql_database_raw" | cut -d '=' -f 2)
 
+backup_name="backup_$db_$(date +'%Y%m%d').sql"
 
 echo  'execute backup'
-$(sudo docker exec fireflyIII_db mariadb-dump --databases firefly -ufirefly -psecret_firefly_password > backup20240410.sql)
+$(docker exec $docker_container mariadb-dump --databases $db -u$user -p$passwd > backups/backup$backup_name.sql)
 echo 'end backup'
